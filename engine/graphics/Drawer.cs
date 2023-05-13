@@ -1,4 +1,6 @@
-﻿using Microsoft.Xna.Framework;
+﻿using boreal.engine.graphics;
+
+using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 
 using System;
@@ -7,7 +9,7 @@ using System.Linq;
 
 namespace boreal.engine
 {
-    internal class Sprites : IDisposable
+    internal class Drawer : IDisposable
     {
         private List<DrawAction> drawActions = new List<DrawAction>();
 
@@ -17,6 +19,7 @@ namespace boreal.engine
 
         internal BasicEffect basicEffect;
 
+        public EssentialDrawer essentialDrawer;
         public Shapes shapes;
 
         public Core core;
@@ -25,11 +28,14 @@ namespace boreal.engine
         public RasterizerState rasterizerStateEmpty = new RasterizerState() { CullMode = CullMode.None };
         public RasterizerState rasterizerState = new RasterizerState() { MultiSampleAntiAlias = false, ScissorTestEnable = true, CullMode = CullMode.None };
 
-        public Sprites(Core core)
+        public Drawer(Core core)
         {
             sprites = new SpriteBatch(core.GraphicsDevice);
-            shapes = new Shapes(core);
-            shapes.spriteBatch = sprites;
+
+            essentialDrawer = new EssentialDrawer() { drawer = this };
+
+            shapes = new Shapes(core) { spriteBatch = sprites };
+            
             this.core = core;
 
             basicEffect = new BasicEffect(core.GraphicsDevice)
@@ -85,16 +91,12 @@ namespace boreal.engine
 
         public void BeginUI()
         {
-            sprites.Begin(rasterizerState: rasterizerState, effect: basicEffect, sortMode: SpriteSortMode.Deferred);
+            sprites.Begin(rasterizerState: rasterizerState, effect: basicEffect, sortMode: SpriteSortMode.Deferred, blendState: BlendState.AlphaBlend);
         }
 
         private BlendState lightMapBlendState = new BlendState() { AlphaSourceBlend = Blend.Zero, AlphaDestinationBlend = Blend.InverseSourceColor, ColorSourceBlend = Blend.Zero, ColorDestinationBlend = Blend.InverseSourceColor };
         public void DrawLightMap(Lightmap lightmap, RenderTarget2D screen, RenderTarget2D lightMap, Microsoft.Xna.Framework.Rectangle destination, Camera cam)
         {
-            //cam.UpdateMatrices();
-            //basicEffect.View = cam.view;
-            //basicEffect.Projection = cam.proj;
-
             core.GraphicsDevice.SetRenderTarget(lightMap);
 
             Begin(cam, true, false, SpriteSortMode.Immediate, lightMapBlendState);
@@ -153,7 +155,7 @@ namespace boreal.engine
 
         public void DrawString(SpriteFont spriteFont, string text, Microsoft.Xna.Framework.Vector2 position, Microsoft.Xna.Framework.Color color, SpriteEffects flip = SpriteEffects.FlipVertically, int orderBy = 0, float scale = 1)
         {
-            sprites.DrawString(spriteFont, text, position, color, 0, Microsoft.Xna.Framework.Vector2.Zero, scale, flip, 0);
+            CreateDrawAction(() => sprites.DrawString(spriteFont, text, position, color, 0, Microsoft.Xna.Framework.Vector2.Zero, scale, flip, 0), orderBy);
         }
 
         public void DrawString(SpriteFont spriteFont, string text, Microsoft.Xna.Framework.Vector2 position, Microsoft.Xna.Framework.Color color, float rotation, Microsoft.Xna.Framework.Vector2 origin, float scale, SpriteEffects flip = SpriteEffects.FlipVertically, int orderBy = 0)

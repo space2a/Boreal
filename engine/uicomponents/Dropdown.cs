@@ -77,7 +77,7 @@ namespace boreal.engine
             isOpen = !isOpen;
         }
 
-        internal override void DrawUI(Sprites spritesBatch)
+        internal override void DrawUI(Drawer spritesBatch)
         {
             var elementRectangle = ElementRectangle;
             elementRectangle.Height = selectedItem.height * (int)transform.scale.Y;
@@ -102,7 +102,7 @@ namespace boreal.engine
             }
         }
 
-        private void DrawSelectionBox(Sprites spritesBatch, DropdownItem dropdownItem, Microsoft.Xna.Framework.Rectangle rect, Microsoft.Xna.Framework.Vector2 position)
+        private void DrawSelectionBox(Drawer spritesBatch, DropdownItem dropdownItem, Microsoft.Xna.Framework.Rectangle rect, Microsoft.Xna.Framework.Vector2 position)
         {
             spritesBatch.shapes.DrawFilledRectangle(rect, dropdownItem.backgroundColor);
             spritesBatch.DrawString(textFont.font, dropdownItem.text, position, dropdownItem.textColor.color);

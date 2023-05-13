@@ -28,17 +28,17 @@ namespace boreal.engine
 
         public int orderBy = 0;
 
-        internal virtual void Draw(Sprites spritesBatch, Transform transform)
+        internal virtual void Draw(Drawer spritesBatch, Transform transform)
         {
 
         }
 
-        internal virtual void Draw(Sprites spritesBatch, Vector2 position, Transform transform, int baseScaling)
+        internal virtual void Draw(Drawer spritesBatch, Vector2 position, Transform transform, int baseScaling)
         {
 
         }
 
-        internal virtual void Draw(Sprites spritesBatch, Vector2 position, Vector2 scaling, Vector2 origin, Transform transform, Color color)
+        internal virtual void Draw(Drawer spritesBatch, Vector2 position, Vector2 scaling, Vector2 origin, Transform transform, Color color)
         {
 
         }
@@ -103,21 +103,21 @@ namespace boreal.engine
         }
 
 
-        internal override void Draw(Sprites spritesBatch, Transform transform)
+        internal override void Draw(Drawer spritesBatch, Transform transform)
         {
             spritesBatch.Draw(texture2D.texture2D, null, origin.xnaV2,
                 (transform.position).xnaV2,
                 transform.rotation, transform.scale.xnaV2, color, _flip, orderBy);
         }
 
-        internal override void Draw(Sprites spritesBatch, Vector2 position, Transform transform, int baseScaling)
+        internal override void Draw(Drawer spritesBatch, Vector2 position, Transform transform, int baseScaling)
         {
             spritesBatch.Draw(texture2D.texture2D, null, Microsoft.Xna.Framework.Vector2.Zero,
                 (transform.position + position).xnaV2,
                 transform.rotation, transform.scale.xnaV2, color, _flip, orderBy);
         }
 
-        internal override void Draw(Sprites spritesBatch, Vector2 position, Vector2 scaling, Vector2 origin, Transform transform, Color color)
+        internal override void Draw(Drawer spritesBatch, Vector2 position, Vector2 scaling, Vector2 origin, Transform transform, Color color)
         {
             spritesBatch.Draw(texture2D.texture2D, null, origin.xnaV2,
                 position.xnaV2,
@@ -185,7 +185,7 @@ namespace boreal.engine
             get { if (index < maxSpriteIndex && index >= 0) currentSpriteIndex = index; return this; }
         }
 
-        internal override void Draw(Sprites spritesBatch, Transform transform)
+        internal override void Draw(Drawer spritesBatch, Transform transform)
         {
             spritesBatch.Draw(texture2D.texture2D,
                 new Microsoft.Xna.Framework.Rectangle(coords[currentSpriteIndex].x, coords[currentSpriteIndex].y, slicedBy, slicedBy),
@@ -194,7 +194,7 @@ namespace boreal.engine
                 transform.scale.xnaV2, color, _flip, orderBy);
         }
 
-        internal override void Draw(Sprites spritesBatch, Vector2 position, Transform transform, int baseScaling)
+        internal override void Draw(Drawer spritesBatch, Vector2 position, Transform transform, int baseScaling)
         {
             spritesBatch.Draw(texture2D.texture2D,
                 new Microsoft.Xna.Framework.Rectangle(coords[currentSpriteIndex].x, coords[currentSpriteIndex].y, slicedBy, slicedBy),
@@ -203,7 +203,7 @@ namespace boreal.engine
                 transform.scale.xnaV2, color, _flip, orderBy);
         }
 
-        internal override void Draw(Sprites spritesBatch, Vector2 position, Vector2 scaling, Vector2 origin, Transform transform, Color color)
+        internal override void Draw(Drawer spritesBatch, Vector2 position, Vector2 scaling, Vector2 origin, Transform transform, Color color)
         {
             spritesBatch.Draw(texture2D.texture2D,
                 new Microsoft.Xna.Framework.Rectangle(coords[currentSpriteIndex].x, coords[currentSpriteIndex].y, slicedBy, slicedBy),
@@ -232,7 +232,7 @@ namespace boreal.engine
             CalculateOrigin();
         }
 
-        internal override void Draw(Sprites spritesBatch, Transform transform)
+        internal override void Draw(Drawer spritesBatch, Transform transform)
         {
             if (region == null) return;
             spritesBatch.Draw(texture2D.texture2D, region.rect, origin.xnaV2,
@@ -240,7 +240,7 @@ namespace boreal.engine
                             transform.rotation, transform.scale.xnaV2, color, _flip, orderBy);
         }
 
-        internal override void Draw(Sprites spritesBatch, Vector2 position, Transform transform, int baseScaling)
+        internal override void Draw(Drawer spritesBatch, Vector2 position, Transform transform, int baseScaling)
         {
             if(destination == null)
             {
@@ -252,7 +252,7 @@ namespace boreal.engine
 
         }
 
-        internal override void Draw(Sprites spritesBatch, Vector2 position, Vector2 scaling, Vector2 origin, Transform transform, Color color)
+        internal override void Draw(Drawer spritesBatch, Vector2 position, Vector2 scaling, Vector2 origin, Transform transform, Color color)
         {
             spritesBatch.Draw(texture2D.texture2D, region.rect, origin.xnaV2,
                             position.xnaV2,

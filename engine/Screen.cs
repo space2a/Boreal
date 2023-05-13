@@ -40,7 +40,7 @@ namespace boreal.engine
             isSet = true;
         }
 
-        public void UnSet(Sprites spritesBatch, Camera activeCamera)
+        public void UnSet(Drawer spritesBatch, Camera activeCamera)
         {
             spritesBatch.Begin(null, true, true);
 
@@ -53,7 +53,7 @@ namespace boreal.engine
             isSet = false;
         }
 
-        public void Present(Sprites spritesBatch, Scene scene, Camera activeCamera)
+        public void Present(Drawer spritesBatch, Scene scene, Camera activeCamera)
         {
             Launcher.core.GraphicsDevice.Clear(new Microsoft.Xna.Framework.Color(50, 0, 0));
 

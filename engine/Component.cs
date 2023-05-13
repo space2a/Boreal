@@ -1,9 +1,11 @@
-﻿namespace boreal.engine
+﻿using boreal.engine.graphics;
+
+namespace boreal.engine
 {
     public abstract class Component
     {
-        internal GameObject gameObject;
-        internal Transform transform
+        public GameObject gameObject { get; internal set; }
+        public Transform transform
         {
             get
             {
@@ -33,22 +35,39 @@
 
         }
 
-        internal virtual void Draw(Sprites spritesBatch)
+        internal virtual void PreDraw(Drawer spritesBatch)
+        {
+            Draw(spritesBatch);
+            Draw(spritesBatch.essentialDrawer);
+        }
+
+        internal virtual void Draw(Drawer spritesBatch)
         {
 
         }
 
-        internal virtual void PreDrawUI(Sprites spritesBatch)
+        protected virtual void Draw(EssentialDrawer essentialDrawer)
+        {
+
+        }
+
+        internal virtual void PreDrawUI(Drawer spritesBatch)
         {
             DrawUI(spritesBatch);
+            DrawUI(spritesBatch.essentialDrawer);
         }
 
-        internal virtual void DrawUI(Sprites spritesBatch)
+        internal virtual void DrawUI(Drawer spritesBatch)
         {
 
         }
 
-        internal virtual void EndDrawUI(Sprites spritesBatch)
+        protected virtual void DrawUI(EssentialDrawer essentialDrawer)
+        {
+
+        }
+
+        internal virtual void EndDrawUI(Drawer spritesBatch)
         {
 
         }

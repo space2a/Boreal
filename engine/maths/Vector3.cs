@@ -1,4 +1,6 @@
-﻿namespace boreal.engine
+﻿using System;
+
+namespace boreal.engine
 {
 
     public class Vector3
@@ -48,6 +50,15 @@
             X = x;
             Y = y;
             Z = z;
+        }
+
+        public static float Distance(Vector3 value1, Vector3 value2)
+        {
+            float x = MathF.Abs((MathF.Max(value1.X, value2.X) - MathF.Min(value1.X, value2.X)));
+            float y = MathF.Abs((MathF.Max(value1.Y, value2.Y) - MathF.Min(value1.Y, value2.Y)));
+            float z = MathF.Abs((MathF.Max(value1.Z, value2.Z) - MathF.Min(value1.Z, value2.Z)));
+
+            return MathF.Sqrt(x * x + y * y + z * z);
         }
 
 

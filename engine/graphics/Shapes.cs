@@ -116,9 +116,9 @@ namespace boreal.engine
                 0, core.GraphicsDevice.Viewport.Height, 0, 10);
         }
 
-        public void DrawFilledRectangle(Microsoft.Xna.Framework.Rectangle rectangle, Color color)
+        public void DrawFilledRectangle(Microsoft.Xna.Framework.Rectangle rectangle, Color color, int layer = 0)
         {
-            DrawFilledRectangleGradient(rectangle, new Gradient(color, color, color, color));
+            core.spritesBatch.CreateDrawAction(() => DrawFilledRectangleGradient(rectangle, new Gradient(color, color, color, color)), layer);
         }
 
         public void DrawFilledRectangleGradient(Microsoft.Xna.Framework.Rectangle rectangle, Gradient gradient)
@@ -156,9 +156,9 @@ namespace boreal.engine
             Flush();
         }
 
-        public void DrawRectangleOutline(Microsoft.Xna.Framework.Rectangle rectangle, Color color, float thickness)
+        public void DrawRectangleOutline(Microsoft.Xna.Framework.Rectangle rectangle, Color color, float thickness, int layer = 0)
         {
-            spriteBatch.DrawRectangle(rectangle, color.color, thickness, 0);
+            core.spritesBatch.CreateDrawAction(() => spriteBatch.DrawRectangle(rectangle, color.color, thickness, 0), layer);
         }
 
         public void DrawLine(float ax, float ay, float bx, float by, float thickness, Color color, bool flush = true)
@@ -221,9 +221,9 @@ namespace boreal.engine
                 Flush();
         }
 
-        internal void DrawCircleOutline(CircleF circle, Color color, int thickness)
+        internal void DrawCircleOutline(CircleF circle, Color color, int thickness, int layer = 0)
         {
-            spriteBatch.DrawCircle(circle, 10, color.color, thickness, 0);
+            core.spritesBatch.CreateDrawAction(() => spriteBatch.DrawCircle(circle, 10, color.color, thickness, 0), layer);
         }
 
         public void DrawCircle(float x, float y, float radius, int points, float thickness, Color color)

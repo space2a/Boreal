@@ -20,7 +20,7 @@
         public SceneryType sceneryType { get; internal set; }
         public ScalingType scalingType = ScalingType.Rendering;
 
-        internal virtual void ApplyScenery(Sprites SpritesBatch, Camera camera)
+        internal virtual void ApplyScenery(Drawer SpritesBatch, Camera camera)
         {
 
         }
@@ -43,7 +43,7 @@
             this.scalingType = scalingType;
         }
 
-        internal override void ApplyScenery(Sprites SpritesBatch, Camera camera)
+        internal override void ApplyScenery(Drawer SpritesBatch, Camera camera)
         {
             Launcher.core.GraphicsDevice.Clear(sceneryColor.color);
         }
@@ -66,7 +66,7 @@
             this.scalingType = scalingType;
         }
 
-        internal override void ApplyScenery(Sprites SpritesBatch, Camera camera)
+        internal override void ApplyScenery(Drawer SpritesBatch, Camera camera)
         {
             if (scalingType == ScalingType.Rendering)
                 SpritesBatch.shapes.DrawFilledRectangleGradient(Launcher.core.windowProfile.XNAboundningRectangle, sceneryGradient);
@@ -95,7 +95,7 @@
             this.scalingType = scalingType;
         }
 
-        internal override void ApplyScenery(Sprites SpritesBatch, Camera camera)
+        internal override void ApplyScenery(Drawer SpritesBatch, Camera camera)
         {
             Launcher.core.GraphicsDevice.Clear(clearingColor.color);
             //spriteBatch.Begin();

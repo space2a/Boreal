@@ -127,7 +127,7 @@ namespace boreal.engine
         }
 
 
-        internal void Draw(Sprites spritesBatch)
+        internal void Draw(Drawer spritesBatch)
         {
             if (!isRendering) return;
 
@@ -135,10 +135,10 @@ namespace boreal.engine
                 childrens[i].Draw(spritesBatch);
 
             for (int i = 0; i < components.Count; i++)
-                components[i].Draw(spritesBatch);
+                components[i].PreDraw(spritesBatch);
         }
 
-        internal void DrawUI(Sprites spritesBatch)
+        internal void DrawUI(Drawer spritesBatch)
         {
             if (!isRendering) return;
 

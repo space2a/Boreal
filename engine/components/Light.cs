@@ -11,7 +11,7 @@
 
         protected override void Start()
         {
-            gameObject.currentScene.sceneLightmap.AddLight(this);
+            //gameObject.currentScene.sceneLightmap.AddLight(this);
         }
 
         internal override void DestroyComponent()

@@ -22,7 +22,7 @@ namespace boreal.engine
             shape.transform = base.transform;
         }
 
-        internal override void Draw(Sprites spritesBatch)
+        internal override void Draw(Drawer spritesBatch)
         {
             shape?.Draw(spritesBatch, transform);
         }
@@ -37,7 +37,7 @@ namespace boreal.engine
     public class Shape
     {
         internal Transform transform;
-        internal virtual void Draw(Sprites spritesBatch, Transform transform) { }
+        internal virtual void Draw(Drawer spritesBatch, Transform transform) { }
         internal virtual void Destroy() { }
     }
 
@@ -56,7 +56,7 @@ namespace boreal.engine
             this.gradient = gradient;
         }
 
-        internal override void Draw(Sprites spritesBatch, Transform transform)
+        internal override void Draw(Drawer spritesBatch, Transform transform)
         {
             if (color != null)
             {
@@ -90,7 +90,7 @@ namespace boreal.engine
             this.gradient = gradient;
         }
 
-        internal override void Draw(Sprites spritesBatch, Transform transform)
+        internal override void Draw(Drawer spritesBatch, Transform transform)
         {
             if (color != null)
             {
@@ -128,7 +128,7 @@ namespace boreal.engine
             this.thickness = thickness;
         }
 
-        internal override void Draw(Sprites spritesBatch, Transform transform)
+        internal override void Draw(Drawer spritesBatch, Transform transform)
         {
             if (color != null)
             {
@@ -161,7 +161,7 @@ namespace boreal.engine
             this.filled = filled;
         }
 
-        internal override void Draw(Sprites spritesBatch, Transform transform)
+        internal override void Draw(Drawer spritesBatch, Transform transform)
         {
             if (filled)
                 spritesBatch.shapes.DrawCircleFilled(transform.position.X, transform.position.Y, radius, points, color);
@@ -219,7 +219,7 @@ namespace boreal.engine
             }
         }
 
-        internal override void Draw(Sprites spritesBatch, Transform transform)
+        internal override void Draw(Drawer spritesBatch, Transform transform)
         {
             if (indices == null)
                 spritesBatch.shapes.DrawPolygon(vertices, thickness, color, transform.position);

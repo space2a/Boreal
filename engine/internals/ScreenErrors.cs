@@ -3,7 +3,7 @@
     internal static class ScreenErrors
     {
 
-        public static void LoadingSceneNull(Sprites spritesBatch)
+        public static void LoadingSceneNull(Drawer spritesBatch)
         {
             string text = "No loading scene, provide a scene to the SceneManager. ";
             Launcher.core.GraphicsDevice.Clear(Color.Black.color);
@@ -13,7 +13,7 @@
                 Microsoft.Xna.Framework.Color.Red);
         }
 
-        public static void NoMainCamera(Sprites spritesBatch)
+        public static void NoMainCamera(Drawer spritesBatch)
         {
             string text = "Missing a camera, set a camera in SceneLoader.currentScene.sceneCamera";
             Launcher.core.GraphicsDevice.Clear(Color.Black.color);

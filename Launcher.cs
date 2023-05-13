@@ -6,6 +6,7 @@ using boreal.engine;
 
 
 using Microsoft.Xna.Framework;
+using Microsoft.Xna.Framework.Input;
 
 using Point = boreal.engine.Point;
 using Rectangle = boreal.engine.Rectangle;
@@ -96,6 +97,8 @@ namespace boreal
         public event EventHandler WindowActivated, WindowDeactivated, Exiting;
         public delegate void fileDrop(string[] files);
         public event fileDrop FileDrop;
+        public delegate void keyPress(engine.Keys key);
+        public event keyPress KeyDown, KeyUp;
         public delegate void windowResolutionChanged(Size2 newResolution, Size2 oldResolution);
         public event windowResolutionChanged WindowResolutionChanged;
 
@@ -205,6 +208,17 @@ namespace boreal
             Launcher.core.Window.FileDrop += delegate (object sender, FileDropEventArgs e)
             {
                 FileDrop?.Invoke(e.Files);
+            };
+
+            Launcher.core.Window.KeyDown += delegate (object sender, InputKeyEventArgs e)
+            {
+
+                KeyDown?.Invoke((engine.Keys)((int)e.Key));
+            };
+
+            Launcher.core.Window.KeyUp += delegate (object sender, InputKeyEventArgs e)
+            {
+                KeyUp?.Invoke((engine.Keys)((int)e.Key));
             };
 
             Launcher.core.Window.ClientSizeChanged += delegate (object sender, EventArgs e)

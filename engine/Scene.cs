@@ -1,6 +1,4 @@
-﻿using Microsoft.Xna.Framework.Graphics;
-
-using boreal.engine.graphics;
+﻿using boreal.engine.graphics;
 
 using System;
 using System.Collections.Generic;
@@ -122,7 +120,6 @@ namespace boreal.engine
                 for (int i = 0; i < gameObjects.Count; i++)
                     gameObjects[i].PreDestroy();
 
-            Console.WriteLine("scene destroy function");
             SceneManager.scenes.Remove(this);
         }
 
@@ -132,19 +129,19 @@ namespace boreal.engine
                 gameObjects[i].PreUpdate(gt);
         }
 
-        internal void BeforeDraw(Sprites spritesBatch, Camera cam)
+        internal void BeforeDraw(Drawer spritesBatch, Camera cam)
         {
             sceneScenery?.ApplyScenery(spritesBatch, cam);
             tileMapBatcher?.Draw(spritesBatch);
         }
 
-        internal void Draw(Sprites spritesBatch)
+        internal void Draw(Drawer spritesBatch)
         {
             for (int i = 0; i < gameObjects.Count; i++)
                 gameObjects[i].Draw(spritesBatch);
         }
 
-        internal void DrawUI(Sprites spritesBatch)
+        internal void DrawUI(Drawer spritesBatch)
         {
             for (int i = 0; i < gameObjects.Count; i++)
                 gameObjects[i].DrawUI(spritesBatch);

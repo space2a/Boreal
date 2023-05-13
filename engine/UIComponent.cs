@@ -1,8 +1,10 @@
-﻿using System;
+﻿using boreal.engine.graphics;
 
 using Microsoft.Xna.Framework.Input;
 
 using MonoGame.Extended;
+
+using System;
 
 namespace boreal.engine
 {
@@ -128,7 +130,7 @@ namespace boreal.engine
         }
 
 
-        internal override void PreDrawUI(Sprites spritesBatch)
+        internal override void PreDrawUI(Drawer spritesBatch)
         {
             var elementRectangle = ElementRectangle;
 
@@ -154,6 +156,7 @@ namespace boreal.engine
                 spritesBatch.SetScissorRectangle(elementRectangle);
                 
                 DrawUI(spritesBatch);
+                DrawUI(spritesBatch.essentialDrawer);
 
                 if (!persistentScissorsElementRectangle)
                 {
@@ -161,20 +164,27 @@ namespace boreal.engine
                 }
             }
             else
+            {
                 DrawUI(spritesBatch);
+                DrawUI(spritesBatch.essentialDrawer);
+            }
         }
 
-        internal override void DrawUI(Sprites spritesBatch)
+        internal override void DrawUI(Drawer spritesBatch)
         {
 
         }
 
-        internal override void EndDrawUI(Sprites spritesBatch)
+        protected override void DrawUI(EssentialDrawer essentialDrawer)
+        {
+
+        }
+
+        internal override void EndDrawUI(Drawer spritesBatch)
         {
             if(persistentScissorsElementRectangle)
                 spritesBatch.ResetScissorRectangle();
         }
-
 
         internal virtual Microsoft.Xna.Framework.Rectangle GetElementRectangle()
         {

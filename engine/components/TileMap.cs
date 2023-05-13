@@ -225,7 +225,7 @@ namespace boreal.engine
             return tileMap;
         }
 
-        internal override void Draw(Sprites spritesBatch)
+        internal override void Draw(Drawer spritesBatch)
         {
             if (transform == null) return;
             if (gameObject.currentScene.tileMapBatcher.isEnabled) return; //no need to draw, the batcher will do it
@@ -239,7 +239,7 @@ namespace boreal.engine
             spritesBatch.Begin(spritesBatch.camera, false);
         }
 
-        internal void DrawTiles(Sprites spritesBatch)
+        internal void DrawTiles(Drawer spritesBatch)
         {
             foreach (var tile in tiles) //faster here than a for loop
             {

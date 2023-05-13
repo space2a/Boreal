@@ -137,7 +137,7 @@ namespace boreal.engine
             position.Y = MathHelper.Lerp(position.Y, target.Y, interpolation);
         }
 
-        internal void DrawCanvas(Sprites spriteBatch)
+        internal void DrawCanvas(Drawer spriteBatch)
         {
             if (canvas == null) return;
             //canvas?.CallDraw(spriteBatch);

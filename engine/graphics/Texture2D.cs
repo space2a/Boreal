@@ -117,6 +117,28 @@ namespace boreal.engine
             return c;
         }
 
+        public Color[,] GetAllPixels2D()
+        {
+            var colors = GetAllPixels();
+
+            Color[,] c2d = new Color[width, height];
+
+            int x = 0, y = 0;
+
+            for (int i = 0; i < colors.Length; i++)
+            {
+                c2d[x, y] = colors[i];
+                x++;
+                if(x == width)
+                {
+                    x = 0;
+                    y++;
+                }
+            }
+
+            return c2d;
+        }
+
 
         public void Dispose()
         {

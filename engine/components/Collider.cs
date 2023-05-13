@@ -105,7 +105,7 @@ namespace boreal.engine
         {
         }
 
-        internal override void Draw(Sprites spritesBatch)
+        internal override void Draw(Drawer spritesBatch)
         {
             spritesBatch.shapes.DrawRectangleOutline(new Microsoft.Xna.Framework.Rectangle(
                 (int)(colliderActor.Bounds.Position.Y), (int)(colliderActor.Bounds.Position.Y), 10, 10)
@@ -162,7 +162,7 @@ namespace boreal.engine
             collisionShape = new RectangleF(new MonoGame.Extended.Point2(transform.position.X, transform.position.Y), new MonoGame.Extended.Size2(collisionSize.width, collisionSize.height));
         }
 
-        internal override void Draw(Sprites spritesBatch)
+        internal override void Draw(Drawer spritesBatch)
         {
             spritesBatch.CreateDrawAction(() => spritesBatch.sprites.DrawRectangle((RectangleF)colliderActor.Bounds, Microsoft.Xna.Framework.Color.Red, 0.1f), -100);
         }
@@ -208,7 +208,7 @@ namespace boreal.engine
                 , 100);
         }
 
-        internal override void Draw(Sprites spritesBatch)
+        internal override void Draw(Drawer spritesBatch)
         {
             spritesBatch.shapes.DrawCircleOutline((CircleF)collisionShape, Color.Green, 3);
         }

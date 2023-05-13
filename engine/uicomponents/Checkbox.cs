@@ -67,7 +67,7 @@ namespace boreal.engine
         }
 
 
-        internal override void DrawUI(Sprites spritesBatch)
+        internal override void DrawUI(Drawer spritesBatch)
         {
             var elementRectangle = ElementRectangle;
             var color = Microsoft.Xna.Framework.Color.White;

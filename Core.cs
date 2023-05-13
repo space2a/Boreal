@@ -17,7 +17,7 @@ namespace boreal
 
         internal GraphicsDeviceManager _graphics;
 
-        internal Sprites spritesBatch;
+        internal Drawer spritesBatch;
 
         internal bool loadingScene = true;
 
@@ -91,7 +91,7 @@ namespace boreal
 
             screen = new Screen(windowProfile.renderedResolution.width, windowProfile.renderedResolution.height);
 
-            spritesBatch = new Sprites(this);
+            spritesBatch = new Drawer(this);
 
             noCameraCam = new Camera();
 
@@ -152,7 +152,7 @@ namespace boreal
             base.Update(gameTime);
         }
 
-        private void CallDraws(Sprites spritesBatch, Scene scene, out Scene currentScene)
+        private void CallDraws(Drawer spritesBatch, Scene scene, out Scene currentScene)
         {
             currentScene = scene;
             currentScene.Draw(spritesBatch);

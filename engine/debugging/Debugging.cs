@@ -1,16 +1,12 @@
-﻿using MonoGame.Extended;
-using MonoGame.Extended.Serialization;
-
-using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace boreal.engine
 {
     public static class Debugging
     {
         public static List<DrawingObject> drawingObjects = new List<DrawingObject>();
-
-        private static Sprites spriteBatch
+        public static int drawOrder = -999;
+        private static Drawer spriteBatch
         {
             get
             {
@@ -28,18 +24,18 @@ namespace boreal.engine
             drawingObjects.Remove(drawingObject);
         }
 
-        internal static void Draw(Sprites spriteBatch)
+        internal static void Draw(Drawer spriteBatch)
         {
             CallDraws(drawingObjects.FindAll(x => x.drawLevel == DrawingObject.DrawLevel.Base), spriteBatch);
         }
 
 
-        internal static void DrawUI(Sprites spriteBatch)
+        internal static void DrawUI(Drawer spriteBatch)
         {
             CallDraws(drawingObjects.FindAll(x => x.drawLevel == DrawingObject.DrawLevel.UI), spriteBatch);
         }
 
-        private static void CallDraws(List<DrawingObject> drawingObjects, Sprites spriteBatch) 
+        private static void CallDraws(List<DrawingObject> drawingObjects, Drawer spriteBatch) 
         {
             for (int i = 0; i < drawingObjects.Count; i++)
             {
@@ -58,7 +54,7 @@ namespace boreal.engine
         public Color color;
 
         public DrawLevel drawLevel;
-        internal static Sprites spriteBatch
+        internal static Drawer spriteBatch
         {
             get
             {
@@ -94,9 +90,9 @@ namespace boreal.engine
         internal override void Draw()
         {
             if (isFiled)
-                spriteBatch.shapes.DrawFilledRectangle(rectangle, color);
+                spriteBatch.shapes.DrawFilledRectangle(rectangle, color, Debugging.drawOrder);
             else
-                spriteBatch.shapes.DrawRectangleOutline(rectangle, color, thickness);
+                spriteBatch.shapes.DrawRectangleOutline(rectangle, color, thickness, Debugging.drawOrder);
         }
     }
 
@@ -111,7 +107,26 @@ namespace boreal.engine
 
         internal override void Draw()
         {
-            spriteBatch.shapes.DrawCircleOutline(circle.ToCircleF(), color, thickness);
+            spriteBatch.shapes.DrawCircleOutline(circle.ToCircleF(), color, thickness, Debugging.drawOrder);
+        }
+    }
+
+    public class DrawingObjectText : DrawingObject
+    {
+        public string text;
+        public Vector2 position;
+        public float scale;
+
+        public DrawingObjectText(string text, Vector2 position, float scale, Color color, DrawLevel drawLevel, bool persistent = false) : base(color, drawLevel, persistent)
+        {
+            this.text = text;
+            this.position = position;
+            this.scale = scale;
+        }
+
+        internal override void Draw()
+        {
+            spriteBatch.DrawString(FontManager.defaultFont.font, text, position.xnaV2, color.color, orderBy: Debugging.drawOrder, scale: scale);
         }
     }
 

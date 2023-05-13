@@ -35,7 +35,7 @@
                 this.text = text;
         }
 
-        internal override void DrawUI(Sprites spritesBatch)
+        internal override void DrawUI(Drawer spritesBatch)
         {
             spritesBatch.DrawString(font.font, text, transform.position.xnaV2, TextColor.color, 0, Microsoft.Xna.Framework.Vector2.Zero, scale);
 

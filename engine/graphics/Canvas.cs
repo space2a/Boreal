@@ -30,7 +30,7 @@ namespace boreal.engine
             starts = true;
         }
 
-        internal void CallDrawUI(Sprites spriteBatch)
+        internal void CallDrawUI(Drawer spriteBatch)
         {
             if (gameObjects == null) return;
             for (int i = 0; i < gameObjects.Count; i++)

@@ -12,7 +12,7 @@ namespace boreal.engine.graphics
 
         public TileMapBatcher() { tilemaps = new List<TileMap>(); }
 
-        internal void Draw(Sprites spritesBatch)
+        internal void Draw(Drawer spritesBatch)
         {
             if (!isEnabled) return;
             DateTime globalStart = DateTime.Now;

@@ -14,7 +14,7 @@
             this.sprite = sprite;
         }
 
-        internal override void DrawUI(Sprites spritesBatch)
+        internal override void DrawUI(Drawer spritesBatch)
         {
             sprite?.Draw(spritesBatch, transform);
         }

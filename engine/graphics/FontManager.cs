@@ -24,7 +24,7 @@ namespace boreal.engine
                     if (File.Exists("assets/arial.ttf"))
                         AddFont(new Font(File.ReadAllBytes("assets/arial.ttf")));
                     else
-                        throw new Exception("Unable to load a default font, please use FontManager.AddFont(...) before Launching boreal.");
+                        throw new Exception("Unable to load a default font, please use FontManager.AddFont(...) before launching boreal.");
                 }
                 return _defaultFont; 
             }

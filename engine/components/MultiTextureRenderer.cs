@@ -10,7 +10,7 @@ namespace boreal.engine
         public float angle = -38;
         public float angleY = 0;
 
-        internal override void Draw(Sprites spritesBatch)
+        internal override void Draw(Drawer spritesBatch)
         {
             //spritesBatch.sprites.End();
 
