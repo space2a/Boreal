@@ -1,9 +1,11 @@
-﻿using Microsoft.Xna.Framework;
+﻿using boreal.engine;
+using boreal.engine.graphics;
+
+using Microsoft.Win32.SafeHandles;
+using Microsoft.Xna.Framework;
 
 using MonoGame.Extended;
 using MonoGame.Extended.Collisions;
-
-using boreal.engine;
 
 using System;
 
@@ -13,39 +15,23 @@ namespace boreal
 {
     internal class Core : Game
     {
+        public WindowProfile windowProfile { get; private set; }
+
+        public CoreInstance instance { get; private set; }
+
         internal CollisionComponent _collisionComponent;
 
         internal GraphicsDeviceManager _graphics;
 
         internal Drawer spritesBatch;
 
-        internal bool loadingScene = true;
+        internal Screen screen;
 
-        public Scene loadedScene;
-
-        public WindowProfile windowProfile { get; private set; }
-        public Screen screen;
-
-        private Camera noCameraCam;
-        private Camera getMainCamera
-        {
-            get
-            {
-                if (loadedScene == null)
-                    return noCameraCam;
-                else if (loadedScene.sceneCamera != null)
-                    return loadedScene.sceneCamera;
-                else if (SceneManager.loadingScene != null && SceneManager.loadingScene.sceneCamera != null && loadingScene)
-                    return SceneManager.loadingScene.sceneCamera;
-                else
-                    return noCameraCam;
-            }
-        }
-
-        public Core(WindowProfile windowProfile)
+        public Core(WindowProfile windowProfile, CoreInstance coreInstance)
         {
             this.windowProfile = windowProfile;
-
+            this.instance = coreInstance;
+            this.instance.core = this;
 
             _graphics = new GraphicsDeviceManager(this);
             _graphics.SynchronizeWithVerticalRetrace = false;
@@ -55,20 +41,8 @@ namespace boreal
 
             CreateCollisionComponent();
 
-            this.Deactivated += Core_Deactivated;
-            this.Activated += Core_Activated;
-
-            //Encoding.RegisterProvider(CodePagesEncodingProvider.Instance);
-        }
-
-        private void Core_Activated(object sender, EventArgs e)
-        {
-            Inputs.MouseState.safeLock = true;
-        }
-
-        private void Core_Deactivated(object sender, EventArgs e)
-        {
-            Inputs.MouseState.safeLock = false;
+            this.Deactivated += delegate (object sender, EventArgs e) { Inputs.MouseState.safeLock = false; };
+            this.Activated += delegate (object sender, EventArgs e) { Inputs.MouseState.safeLock = true; };
         }
 
         protected override void Initialize()
@@ -93,39 +67,20 @@ namespace boreal
 
             spritesBatch = new Drawer(this);
 
-            noCameraCam = new Camera();
+            instance.noCameraCam = new Camera();
 
             base.Initialize();
         }
 
-        private void CallStartsIfNeeded(Scene scene)
+        internal void CreateCollisionComponent()
         {
-            if (!scene.startedCalled)
-            {
-                scene.startedCalled = true;
-                for (int i = 0; i < scene.gameObjects.Count; i++)
-                    scene.gameObjects[i].Start();
-
-                scene.sceneCamera?.canvas?.CallStart();
-            }
-        }
-
-        private void CallUpdates(engine.GameTime gt, Camera cam, Scene scene)
-        {
-            scene.CallUpdates(gt);
-            cam.canvas?.CallUpdate(gt);
+            _collisionComponent = new CollisionComponent(
+                new RectangleF((windowProfile.renderedResolution.width * 10) /2 * -1, (windowProfile.renderedResolution.height * 10) /2 * -1,
+                windowProfile.renderedResolution.width * 10, windowProfile.renderedResolution.height * 10));
         }
 
         protected override void Update(GameTime gameTime)
         {
-            if (!Launcher.GetCoreAndBackgroundState()) return;
-
-            var gt = new engine.GameTime(gameTime);
-            Camera cam = getMainCamera;
-
-            Inputs.Update();
-            Inputs.MouseState.UpdateScreenPosition(screen, cam);
-
             try
             {
                 _collisionComponent.Update(gameTime); //update the collision.
@@ -135,128 +90,193 @@ namespace boreal
                 Console.WriteLine("collision engine bug");
             }
 
-            if (loadedScene == null && SceneManager.loadingScene != null)
-            {
-                CallStartsIfNeeded(SceneManager.loadingScene);
-                CallUpdates(gt, cam, SceneManager.loadingScene);
-                base.Update(gameTime); 
-                return;
-            }
-
-            if (loadingScene) return;
-
-            CallStartsIfNeeded(loadedScene);
-
-            CallUpdates(gt, cam, loadedScene);
-
+            instance.Update(gameTime);
             base.Update(gameTime);
         }
 
-        private void CallDraws(Drawer spritesBatch, Scene scene, out Scene currentScene)
-        {
-            currentScene = scene;
-            currentScene.Draw(spritesBatch);
-        }
-
-        public void StartDrawBatchs(out Camera cam)
-        {
-            cam = getMainCamera;
-
-            screen.Set();
-
-            loadedScene?.BeforeDraw(spritesBatch, cam);
-
-            spritesBatch.Begin(cam, false);
-            spritesBatch.shapes.Begin(cam);
-        }
-
-
-
         protected override void Draw(GameTime gameTime)
         {
-            DateTime start = DateTime.Now;
+            instance.Draw(gameTime);
+            base.Draw(gameTime);
+        }
+    }
+
+    public class CoreInstance
+    {
+        internal Core core;
+
+        public Scene loadedScene;
+
+        public bool loadingScene = true;
+
+        internal Screen screen
+        {
+            get
+            {
+                return core.screen;
+            }
+        }
+
+        internal Drawer spritesBatch
+        {
+            get
+            {
+                return core.spritesBatch;
+            }
+        }
+
+        public EssentialDrawer essentialDrawer
+        {
+            get
+            {
+                return core.spritesBatch.essentialDrawer;
+            }
+        }
+
+        protected Camera getMainCamera
+        {
+            get
+            {
+                if (loadedScene == null)
+                    return noCameraCam;
+                else if (loadedScene.sceneCamera != null)
+                    return loadedScene.sceneCamera;
+                else if (SceneManager.loadingScene != null && SceneManager.loadingScene.sceneCamera != null && loadingScene)
+                    return SceneManager.loadingScene.sceneCamera;
+                else
+                    return noCameraCam;
+            }
+        }
+
+        internal Camera noCameraCam;
+
+        internal void Update(GameTime gameTime)
+        {
             if (!Launcher.GetCoreAndBackgroundState()) return;
 
-            Scene currentScene = null;
-            StartDrawBatchs(out Camera cam);
+            var gt = new engine.GameTime(gameTime);
 
-            if (cam == noCameraCam && loadedScene != null)
-            { ScreenErrors.NoMainCamera(spritesBatch); EndDrawBatchs(currentScene, cam); return; }
-
-            if (loadingScene || !loadedScene.startedCalled)
+            if (OnUpdateStart())
             {
-                if (SceneManager.loadingScene != null)
-                    CallDraws(spritesBatch, SceneManager.loadingScene, out currentScene);
-                else { ScreenErrors.LoadingSceneNull(spritesBatch); EndDrawBatchs(currentScene, cam); return; }
+                OnUpdate(gt);
+                OnUpdateEnd();
             }
-            else if (loadedScene != null && loadedScene.startedCalled)
-                CallDraws(spritesBatch, loadedScene, out currentScene);
+        }
 
-            EndDrawBatchs(currentScene, cam);
+        //Updates...
 
-            base.Draw(gameTime);
+        protected virtual bool OnUpdateStart() { return true; }
+
+        protected virtual void OnUpdate(engine.GameTime gameTime) { }
+
+        protected virtual void OnUpdateEnd() { }
+
+        //Draws...
+        protected virtual bool OnDrawStart(out Camera cam)
+        {
+            cam = getMainCamera;
+            return true;
+        }
+
+        internal void Draw(GameTime gameTime)
+        {
+            engine.GameTime gt = new engine.GameTime(gameTime);
+
+            if(OnDrawStart(out Camera cam))
+            {
+                OnDraw(gt);
+                OnDrawEnd(loadedScene, cam);
+            }
+
             //Console.WriteLine((DateTime.Now - start).TotalMilliseconds + " ms draw");
         }
 
-        private void EndDrawBatchs(Scene scene, Camera cam)
+        protected virtual void OnDraw(engine.GameTime gameTime) { }
+
+        protected virtual void OnDrawEnd(Scene scene, Camera cam) { }
+
+        public virtual void LoadScene(Scene scene) { }
+
+        public virtual void LoadLoadingScene(Scene loadingScene) { }
+
+        public void BeginDraw(Camera cam, bool immediate = false)
+        {
+            Microsoft.Xna.Framework.Graphics.SpriteSortMode ssm = Microsoft.Xna.Framework.Graphics.SpriteSortMode.Deferred;
+            if (immediate) ssm = Microsoft.Xna.Framework.Graphics.SpriteSortMode.Immediate;
+            spritesBatch.Begin(cam, false, spriteSortMode: ssm);
+            spritesBatch.shapes.Begin(cam);
+        }
+
+        public void BeginDrawUI()
+        {
+            spritesBatch.End();
+            spritesBatch.shapes.isDrawingInCanvas = true;
+            spritesBatch.shapes.SetMatrixToDefault();
+            spritesBatch.BeginUI();
+        }
+
+        public void DrawCameraCanvas(Camera cam)
+        {
+            cam.DrawCanvas(spritesBatch);
+        }
+
+        public void Draw(Object obj, Camera cam, bool UI = false)
+        {
+            switch (obj)
+            {
+                case GameObject g:
+                    if (!UI)
+                        g.Draw(spritesBatch);
+                    else
+                        g.DrawUI(spritesBatch);
+                    break;
+                case Component c:
+                    if(!UI)
+                        c.PreDraw(spritesBatch);
+                    else
+                        c.PreDrawUI(spritesBatch);
+                    break;
+                case Scenery s:
+                    s.ApplyScenery(spritesBatch, cam);
+                    break;
+                default:
+                    spritesBatch.DrawString(FontManager.defaultFont.font, obj.ToString(), new Microsoft.Xna.Framework.Vector2(0, 0), Microsoft.Xna.Framework.Color.Black);
+                    break;
+            }
+        }
+
+        public void EndDraw()
         {
             engine.Debugging.Draw(spritesBatch);
             spritesBatch.End();
-
-            //draws UIs
-            if(scene != null)
-            {
-                spritesBatch.BeginUI();
-                scene.DrawUI(spritesBatch);
-                spritesBatch.End(); //ends both ui and non-ui batchs.
-            }
-
-            spritesBatch.shapes.isDrawingInCanvas = true;
-            spritesBatch.shapes.SetMatrixToDefault();
-
-            screen.UnSet(spritesBatch, cam);
             spritesBatch.shapes.End();
             spritesBatch.shapes.isDrawingInCanvas = false;
-            screen.Present(spritesBatch, scene, cam);
         }
 
-        public void LoadScene(Scene scene)
+        public void ExecuteDrawActionsNow()
         {
-            DateTime dateTime = DateTime.Now;
-            loadingScene = true;
-            CreateCollisionComponent();
-
-            if (loadedScene != null)
-                loadedScene.Destroy();
-
-            loadedScene = null;
-
-
-            if (scene == null) { throw new Exception("no scene to load content from."); }
-            Console.WriteLine("Core.LoadScene(..):" + scene.sceneName + " with : " + scene.gameObjects.Count + "bad gobj(s)");
-
-            loadedScene = scene;
-            scene.OnCreationCall(dateTime); // <--- OnCreationCall() will set loadingScene to false when done.
+            spritesBatch.ExecuteDrawActions();
         }
 
-        public void LoadLoadingScene(Scene loadingScene)
+        public void Update(Object obj, engine.GameTime gameTime)
         {
-            LoadContent();
-
-            if (SceneManager.loadingScene != null)
-                SceneManager.loadingScene.Destroy();
-
-            SceneManager.loadingScene = loadingScene;
-            SceneManager.loadingScene.OnCreation();
-
+            switch (obj)
+            {
+                case GameObject g:
+                    g.PreUpdate(gameTime);
+                    break;
+                case Component c:
+                    c.PreUpdate(gameTime);
+                    break;
+            }
         }
 
-        internal void CreateCollisionComponent()
+        public void UpdateInputs(Camera cam)
         {
-            _collisionComponent = new CollisionComponent(
-                new RectangleF((windowProfile.renderedResolution.width * 10) /2 * -1, (windowProfile.renderedResolution.height * 10) /2 * -1,
-                windowProfile.renderedResolution.width * 10, windowProfile.renderedResolution.height * 10));
+            Inputs.Update();
+            Inputs.MouseState.UpdateScreenPosition(screen, cam);
         }
     }
+
 
 }

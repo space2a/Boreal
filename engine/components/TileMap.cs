@@ -230,13 +230,7 @@ namespace boreal.engine
             if (transform == null) return;
             if (gameObject.currentScene.tileMapBatcher.isEnabled) return; //no need to draw, the batcher will do it
 
-            spritesBatch.sprites.End();
-            spritesBatch.Begin(spritesBatch.camera, false, false, SpriteSortMode.Texture);
-
             DrawTiles(spritesBatch);
-
-            spritesBatch.End();
-            spritesBatch.Begin(spritesBatch.camera, false);
         }
 
         internal void DrawTiles(Drawer spritesBatch)

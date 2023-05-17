@@ -1,12 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Reflection;
-
-using boreal.engine;
-
+﻿using boreal.engine;
 
 using Microsoft.Xna.Framework;
-using Microsoft.Xna.Framework.Input;
+
+using System;
+using System.IO;
+using System.Reflection;
 
 using Point = boreal.engine.Point;
 using Rectangle = boreal.engine.Rectangle;
@@ -37,9 +35,10 @@ namespace boreal
             }
         }
 
-        public static void Ini(WindowProfile windowProfile, bool setWorkingDirectory = true)
+        public static void Ini(WindowProfile windowProfile, CoreInstance instance = null, bool setWorkingDirectory = true)
         {
-            core = new Core(windowProfile);
+            if(instance == null) instance = new DefaultCore();
+            core = new Core(windowProfile, instance);
             if (setWorkingDirectory)
             {
                 Directory.SetCurrentDirectory(Path.GetDirectoryName(Assembly.GetExecutingAssembly().Location));

@@ -36,18 +36,8 @@ namespace boreal.engine
             for (int i = 0; i < gameObjects.Count; i++)
             {
                 gameObjects[i].DrawUI(spriteBatch);
-                //Console.WriteLine("calling draw ui on " + uiComponents[i].GetType());
             }
         }
-
-        //internal void CallDraw(Sprites spriteBatch)
-        //{
-        //    if (gameObjects == null) return;
-        //    for (int i = 0; i < gameObjects.Count; i++)
-        //    {
-        //        gameObjects[i].Draw(spriteBatch);
-        //    }
-        //}
 
         internal void CallUpdate(GameTime gameTime)
         {

@@ -24,6 +24,8 @@ namespace boreal.engine
         public delegate void GameObjectModification(Scene scene, GameObject gameObject);
         public event GameObjectModification OnAddGameObject;
 
+        private bool creationCall = false;
+
         public Scene()
         {
             
@@ -39,13 +41,15 @@ namespace boreal.engine
 
         }
 
-        internal void OnCreationCall(DateTime dateTime)
+        public void OnCreationCall(DateTime dateTime)
         {
+            if (creationCall) throw new Exception("OnCreationCall already called.");
+            creationCall = true;
             int bad_gobjs = gameObjects.Count;
             new Thread(() =>
             {
                 OnCreation();
-                Launcher.core.loadingScene = false;
+                Launcher.core.instance.loadingScene = false;
                 Console.WriteLine("scene loaded in " + (DateTime.Now - dateTime).TotalSeconds + "s with " +
                 (gameObjects.Count - bad_gobjs) + " properly added gobjs.");
             }).Start();

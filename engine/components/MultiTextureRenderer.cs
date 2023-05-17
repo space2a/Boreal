@@ -12,9 +12,6 @@ namespace boreal.engine
 
         internal override void Draw(Drawer spritesBatch)
         {
-            //spritesBatch.sprites.End();
-
-            //spritesBatch.Begin(spritesBatch.camera, false, false, SpriteSortMode.Deferred);
             for (int i = 0; i < textureObjects.Count; i++)
             {
                 var tObject = textureObjects[i];
@@ -27,16 +24,13 @@ namespace boreal.engine
                     (transform.position + tObject.drawPosition).xnaV2,
                     tObject.rotation + transform.rotation, tObject.drawSize.xnaV2 * transform.scale.xnaV2, tObject.drawColor);
                 }
-                else
+                else if(tObject.sprite != null)
                 {
                     tObject.sprite.Draw(spritesBatch, (transform.position + tObject.drawPosition), tObject.drawSize * transform.scale, tObject.origin, transform, tObject.drawColor);
                 }
 
                 tObject.AfterDraw();
             }
-
-            //spritesBatch.End();
-            //spritesBatch.Begin(spritesBatch.camera, false);
         }
 
     }

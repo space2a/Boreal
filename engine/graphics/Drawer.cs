@@ -187,6 +187,13 @@ namespace boreal.engine
         {
             //shapes.End();
 
+            ExecuteDrawActions();
+
+            sprites.End();
+        }
+
+        public void ExecuteDrawActions()
+        {
             drawActions = drawActions.OrderBy(x => x.orderBy).ToList();
             drawActions.Reverse();
 
@@ -196,7 +203,6 @@ namespace boreal.engine
             }
 
             drawActions.Clear();
-            sprites.End();
         }
 
         public void Dispose()

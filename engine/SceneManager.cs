@@ -12,18 +12,18 @@ namespace boreal.engine
         public static void LoadScene(string sceneName)
         {
             currentScene = scenes.Find(x => x.sceneName == sceneName);
-            Launcher.core.LoadScene(currentScene);
+            Launcher.core.instance.LoadScene(currentScene);
         }
 
         public static void LoadScene(Scene scene)
         {
             currentScene = scene;
-            Launcher.core.LoadScene(currentScene);
+            Launcher.core.instance.LoadScene(currentScene);
         }
 
         public static void SetLoadingScene(Scene loadingScene)
         {
-            Launcher.core.LoadLoadingScene(loadingScene);
+            Launcher.core.instance.LoadLoadingScene(loadingScene);
         }
 
         public static bool DeclareScene(Scene scene)

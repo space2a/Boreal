@@ -14,7 +14,7 @@
         {
             if (font == null) font = FontManager.defaultFont;
             drawer.DrawString(font.font, text, position.xnaV2, color.color, scale: scale, orderBy: orderBy);
-        }
+        }   
 
     }
 
