@@ -19,8 +19,6 @@ namespace boreal.engine
 
         public TileMapBatcher tileMapBatcher = new TileMapBatcher();
 
-        internal bool startedCalled = false;
-
         public delegate void GameObjectModification(Scene scene, GameObject gameObject);
         public event GameObjectModification OnAddGameObject;
 
@@ -46,6 +44,7 @@ namespace boreal.engine
             if (creationCall) throw new Exception("OnCreationCall already called.");
             creationCall = true;
             int bad_gobjs = gameObjects.Count;
+
             new Thread(() =>
             {
                 OnCreation();
@@ -59,8 +58,8 @@ namespace boreal.engine
         {
             gameObjects.Add(gameObject);
             OnAddGameObject?.Invoke(this, gameObject);
-            if (startedCalled)
-                gameObject.Start();
+
+            gameObject.Start();
 
             return gameObject;
         }
@@ -84,8 +83,7 @@ namespace boreal.engine
         public void InsertGameObject(GameObject gameObject, int index)
         {
             gameObjects.Insert(index, gameObject);
-            if (startedCalled)
-                gameObject.Start();
+            gameObject.Start();
         }
 
         public bool CreateScene(string sceneName)

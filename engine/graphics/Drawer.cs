@@ -51,9 +51,6 @@ namespace boreal.engine
             };
         }
 
-        private int deltaScrollWheelValue = 0;
-        private int currentScrollWheelValue = 0;
-
         public void Begin(Camera camera, bool isTextureFilteringEnabled, bool unset = false, SpriteSortMode spriteSortMode = SpriteSortMode.Deferred, BlendState blendState = null)
         {
             SamplerState samplerState = SamplerState.PointClamp;

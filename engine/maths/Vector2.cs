@@ -210,20 +210,18 @@ namespace boreal.engine
             return value1;
         }
 
+        public static Vector2 Normalize(Vector2 value, bool canBeNaN = false)
+        {
+            value.Normalize();
+            return value;
+        }
+
         public void Normalize(bool canBeNaN = false)
         {
             float num = 1f / MathF.Sqrt(X * X + Y * Y);
             X *= num;
             Y *= num;
             if (!canBeNaN & isNaN()) { X = 0; Y = 0; }
-        }
-
-        public static Vector2 Normalize(Vector2 value)
-        {
-            float num = 1f / MathF.Sqrt(value.X * value.X + value.Y * value.Y);
-            value.X *= num;
-            value.Y *= num;
-            return value;
         }
 
         public static float Distance(Vector2 value1, Vector2 value2)

@@ -7,19 +7,6 @@ namespace boreal
     public class DefaultCore : CoreInstance
     {
 
-        //Start...
-        private void CallStartsIfNeeded(Scene scene)
-        {
-            if (!scene.startedCalled)
-            {
-                scene.startedCalled = true;
-                for (int i = 0; i < scene.gameObjects.Count; i++)
-                    scene.gameObjects[i].Start();
-
-                scene.sceneCamera?.canvas?.CallStart();
-            }
-        }
-
         //Updates...
         private void CallUpdates(engine.GameTime gt, Camera cam, Scene scene)
         {
@@ -35,19 +22,14 @@ namespace boreal
 
             if (loadedScene == null && SceneManager.loadingScene != null)
             {
-                CallStartsIfNeeded(SceneManager.loadingScene);
                 CallUpdates(gameTime, cam, SceneManager.loadingScene);
                 return;
             }
 
             if (loadingScene) return;
 
-            CallStartsIfNeeded(loadedScene);
-
             CallUpdates(gameTime, cam, loadedScene);
         }
-
-
 
         //Draws...
         private void CallDraws(Drawer spritesBatch, Scene scene, out Scene currentScene)
@@ -70,7 +52,6 @@ namespace boreal
 
         protected override void OnDraw(GameTime gameTime)
         {
-            DateTime start = DateTime.Now;
             if (!Launcher.GetCoreAndBackgroundState()) return;
 
             Scene currentScene = null;
@@ -79,13 +60,13 @@ namespace boreal
             if (cam == noCameraCam && loadedScene != null)
             { ScreenErrors.NoMainCamera(spritesBatch); EndDrawBatchs(currentScene, cam); return; }
 
-            if (loadingScene || !loadedScene.startedCalled)
+            if (loadingScene)
             {
                 if (SceneManager.loadingScene != null)
                     CallDraws(spritesBatch, SceneManager.loadingScene, out currentScene);
                 else { ScreenErrors.LoadingSceneNull(spritesBatch); EndDrawBatchs(currentScene, cam); return; }
             }
-            else if (loadedScene != null && loadedScene.startedCalled)
+            else if (loadedScene != null)
                 CallDraws(spritesBatch, loadedScene, out currentScene);
 
             EndDrawBatchs(currentScene, cam);
@@ -93,7 +74,7 @@ namespace boreal
 
         private void EndDrawBatchs(Scene scene, Camera cam)
         {
-            engine.Debugging.Draw(spritesBatch);
+            engine.Debugging.Draw();
             spritesBatch.End();
 
             //draws UIs
@@ -113,8 +94,6 @@ namespace boreal
             screen.Present(spritesBatch, scene, cam);
         }
 
-
-
         //Scenes loading...
         public override void LoadScene(Scene scene)
         {
@@ -125,7 +104,6 @@ namespace boreal
                 loadedScene.Destroy();
 
             loadedScene = null;
-
 
             if (scene == null) { throw new Exception("no scene to load content from."); }
             Console.WriteLine("Core.LoadScene(..):" + scene.sceneName + " with : " + scene.gameObjects.Count + "bad gobj(s)");

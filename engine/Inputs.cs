@@ -1,8 +1,10 @@
 ﻿using Microsoft.Xna.Framework.Input;
 
+using System;
 using System.Collections.Generic;
 
-namespace boreal.engine {
+namespace boreal.engine
+{
     public static class Inputs
     { 
         public static InputManager inputManager = new InputManager();
@@ -100,8 +102,18 @@ namespace boreal.engine {
         public Vector2 screenMousePosition = Vector2.Zero;
         public Vector2 windowMousePosition= Vector2.Zero;
 
-        public Vector2 mouseDirection = Vector2.Zero;
+        public Vector2 mouseDirection
+        {
+            get
+            {
+                return Vector2.Normalize(Vector2.Subtract(new Vector2(previousState.X, previousState.Y * -1), new Vector2(currentState.X, currentState.Y *-1)));
+            }
+        }
+
         public Vector2 mouseSpeed = Vector2.Zero;
+
+        private int currentScrollWheelValue = 0;
+        public int scrollWheelValue = 0;
 
         public bool lockCursor = false;
         public bool constrainCursor = false;
@@ -109,15 +121,15 @@ namespace boreal.engine {
 
         public bool disableSafeLock = false;
 
+        private bool ignoreCursorTeleportation = true;
+
         public bool isCursorVisible
         {
             get { return Launcher.core.IsMouseVisible; } 
             set { Launcher.core.IsMouseVisible = value; }
         }
 
-
         internal bool safeLock = true;
-        private bool ignoreCursorTeleportation = false;
 
         private MouseButtons[] mouseButtons = new MouseButtons[5]
         {
@@ -130,10 +142,8 @@ namespace boreal.engine {
             previousState = currentState;
             currentState = Microsoft.Xna.Framework.Input.Mouse.GetState();
 
-            mouseDirection = Vector2.Subtract(new Vector2(previousState.X, previousState.Y), new Vector2(currentState.X, currentState.Y));
-
-            mouseDirection.Normalize();
-            mouseDirection.X *= -1;
+            scrollWheelValue = currentState.ScrollWheelValue - currentScrollWheelValue;
+            currentScrollWheelValue += scrollWheelValue;
 
             if (lockCursor && safeLock && !disableSafeLock)
             {
@@ -352,7 +362,12 @@ namespace boreal.engine {
         public MouseButtonInput(MouseButtons mouseButton) { this.mouseButton = mouseButton; }
     }
 
-    public sealed class ControllerButtonInput : InputSource
+    public sealed class MouseWheel : InputSource //To do...
+    {
+
+    }
+
+    public sealed class ControllerButtonInput : InputSource //To do...
     {
 
     }

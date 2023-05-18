@@ -5,6 +5,7 @@ using Microsoft.Xna.Framework;
 using System;
 using System.IO;
 using System.Reflection;
+using System.Threading;
 
 using Point = boreal.engine.Point;
 using Rectangle = boreal.engine.Rectangle;
@@ -19,6 +20,14 @@ namespace boreal
         
         internal static CoreState coreState = CoreState.Stopped;
         internal static CoreState coreStateBackground = CoreState.Playing;
+
+        public static CoreInstance coreInstance
+        {
+            get
+            {
+                return core?.instance;
+            }
+        }
 
         public enum CoreState
         {
@@ -56,6 +65,25 @@ namespace boreal
 
             if(windowProfile.startPosition == WindowProfile.StartPositionType.Manual)
                 core.Window.Position = new Microsoft.Xna.Framework.Point(windowProfile.startPositionManual.X, windowProfile.startPositionManual.Y);
+        }
+
+        /// <summary>
+        /// Replace the in use CoreInstance with a passed one, this function is only recommend for a CoreInstance that handle hot swapping.
+        /// </summary>
+        /// <param name="coreInstance"></param>
+        /// <param name="fetchPropertiesFromCurrentCI">Copy the loadedScene from the current CoreInstance to the passed CoreInstance</param>
+        /// <param name="force">Will wait to end of the Update and Draw cycle to replace the Core Instance</param>
+        public static void RequestCoreInstanceSwap(CoreInstance coreInstance, bool fetchPropertiesFromCurrentCI = true, bool force = false) 
+        {
+            if (fetchPropertiesFromCurrentCI)
+                coreInstance.loadedScene = core.instance.loadedScene;
+
+            coreInstance.core = core;
+            new Thread(() =>
+            {
+                while (!force && core.instance.isBusy) { } //wait for the end of the update and draw cycles. 
+                core.instance = coreInstance;
+            }).Start();
         }
 
         public static void WaitForInitialized()

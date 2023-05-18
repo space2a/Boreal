@@ -1,7 +1,6 @@
 ﻿using boreal.engine;
 using boreal.engine.graphics;
 
-using Microsoft.Win32.SafeHandles;
 using Microsoft.Xna.Framework;
 
 using MonoGame.Extended;
@@ -17,7 +16,7 @@ namespace boreal
     {
         public WindowProfile windowProfile { get; private set; }
 
-        public CoreInstance instance { get; private set; }
+        public CoreInstance instance { get; set; }
 
         internal CollisionComponent _collisionComponent;
 
@@ -81,6 +80,7 @@ namespace boreal
 
         protected override void Update(GameTime gameTime)
         {
+            instance.isBusy = true;
             try
             {
                 _collisionComponent.Update(gameTime); //update the collision.
@@ -98,6 +98,7 @@ namespace boreal
         {
             instance.Draw(gameTime);
             base.Draw(gameTime);
+            instance.isBusy = false;
         }
     }
 
@@ -149,6 +150,8 @@ namespace boreal
         }
 
         internal Camera noCameraCam;
+
+        internal bool isBusy = false;
 
         internal void Update(GameTime gameTime)
         {
@@ -220,7 +223,39 @@ namespace boreal
             cam.DrawCanvas(spritesBatch);
         }
 
-        public void Draw(Object obj, Camera cam, bool UI = false)
+        /// <summary>
+        /// Use this function to call the a GameObject or a component.
+        /// </summary>
+        public void Start(object obj)
+        {
+            switch (obj)
+            {
+                case GameObject g:
+                    g.Start();
+                    break;
+                case Component c:
+                    c.PreStart();
+                    break;
+            }
+        }
+
+        public void Update(object obj, engine.GameTime gameTime)
+        {
+            switch (obj)
+            {
+                case GameObject g:
+                    g.PreUpdate(gameTime);
+                    break;
+                case Component c:
+                    c.PreUpdate(gameTime);
+                    break;
+                case Scene s:
+                    s.CallUpdates(gameTime);
+                    break;
+            }
+        }
+
+        public void Draw(object obj, Camera cam, bool UI = false)
         {
             switch (obj)
             {
@@ -247,7 +282,7 @@ namespace boreal
 
         public void EndDraw()
         {
-            engine.Debugging.Draw(spritesBatch);
+            engine.Debugging.Draw();
             spritesBatch.End();
             spritesBatch.shapes.End();
             spritesBatch.shapes.isDrawingInCanvas = false;
@@ -258,25 +293,11 @@ namespace boreal
             spritesBatch.ExecuteDrawActions();
         }
 
-        public void Update(Object obj, engine.GameTime gameTime)
-        {
-            switch (obj)
-            {
-                case GameObject g:
-                    g.PreUpdate(gameTime);
-                    break;
-                case Component c:
-                    c.PreUpdate(gameTime);
-                    break;
-            }
-        }
-
         public void UpdateInputs(Camera cam)
         {
             Inputs.Update();
             Inputs.MouseState.UpdateScreenPosition(screen, cam);
         }
+
     }
-
-
 }

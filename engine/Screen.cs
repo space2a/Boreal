@@ -44,11 +44,10 @@ namespace boreal.engine
         {
             spritesBatch.Begin(null, true, true);
 
-            Debugging.DrawUI(spritesBatch);
+            Debugging.DrawUI();
             activeCamera.DrawCanvas(spritesBatch);
 
             spritesBatch.End();
-
             Launcher.core.GraphicsDevice.SetRenderTarget(null);
             isSet = false;
         }

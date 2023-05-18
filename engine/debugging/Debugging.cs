@@ -24,18 +24,18 @@ namespace boreal.engine
             drawingObjects.Remove(drawingObject);
         }
 
-        internal static void Draw(Drawer spriteBatch)
+        internal static void Draw()
         {
-            CallDraws(drawingObjects.FindAll(x => x.drawLevel == DrawingObject.DrawLevel.Base), spriteBatch);
+            CallDraws(drawingObjects.FindAll(x => x.drawLevel == DrawingObject.DrawLevel.Base));
         }
 
 
-        internal static void DrawUI(Drawer spriteBatch)
+        internal static void DrawUI()
         {
-            CallDraws(drawingObjects.FindAll(x => x.drawLevel == DrawingObject.DrawLevel.UI), spriteBatch);
+            CallDraws(drawingObjects.FindAll(x => x.drawLevel == DrawingObject.DrawLevel.UI));
         }
 
-        private static void CallDraws(List<DrawingObject> drawingObjects, Drawer spriteBatch) 
+        private static void CallDraws(List<DrawingObject> drawingObjects) 
         {
             for (int i = 0; i < drawingObjects.Count; i++)
             {
